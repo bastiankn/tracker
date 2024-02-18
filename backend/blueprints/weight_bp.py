@@ -1,6 +1,6 @@
 from flask import jsonify, request, Blueprint
 from models.weight_model import Weight  
-from app import db
+from extensions import db
 
 bp = Blueprint('weight', __name__, url_prefix='/weight')
 

@@ -1,5 +1,6 @@
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
+from extensions import db
+from blueprints import weight_bp
 
 def create_app():
     app = Flask(__name__)
@@ -8,7 +9,8 @@ def create_app():
     db.init_app(app)
     return app
 
-db = SQLAlchemy()
+def register_blueprints(app):
+    app.register_blueprint(weight_bp.bp)
 
 if __name__ == '__main__':
     app = create_app()
