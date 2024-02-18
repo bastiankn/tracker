@@ -36,6 +36,8 @@ https://stackoverflow.com/questions/75365194/sqlalchemy-2-0-version-of-user-quer
 
 - pip list (= list of packages, that are installed)
 - python -m venv [name]
-- where python
-- can be installed easily with vscode
-- make sure that python is properly installed to the environment with python --version and pip --version
+- make sure that python is properly installed to the environment with python 
+--version and pip --version
+The following in Terminal
+- virutalenv .venv
+- .venv\Scripts\activate (You might have to enable running scripts in powershell)
