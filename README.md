@@ -6,8 +6,9 @@ Environment:
 - Version Control: GitHub
 - DBMS: SQLite
 - Programming Language: Python (w. Pandas)
-- Web Framework: Flask?
+- Web Framework: Flask
 - Frontend Technology: HTML, CSS, JavaScrip
+- Frontend Framework: ?
 
 Installation:
 - https://code.visualstudio.com/Download

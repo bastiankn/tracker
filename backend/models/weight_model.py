@@ -1,5 +1,5 @@
 from app import db
-from user.py import User
+from .user_model import User
 from datetime import datetime
 
 class Weight(db.Model):
