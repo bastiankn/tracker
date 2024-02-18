@@ -1,5 +1,5 @@
 from extensions import db
-from user_model import User
+from models.user_model import User
 from datetime import datetime
 
 class Weight(db.Model):
