@@ -12,3 +12,4 @@ Environment:
 Installation:
 - https://code.visualstudio.com/Download
 - https://desktop.github.com/
+- https://www.python.org/downloads/
