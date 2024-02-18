@@ -31,3 +31,9 @@ beenden mit:
 ## Misc
 SQLAlchemy Query.get() ist deprecated, kann evtl. hiermit ersetzt werden:
 https://stackoverflow.com/questions/75365194/sqlalchemy-2-0-version-of-user-query-get1-in-flask-sqlalchemy
+
+## Venv
+
+- pip list (= list of packages, that are installed)
+- python -m venv [name]
+- 
