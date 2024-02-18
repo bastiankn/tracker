@@ -1,7 +1,5 @@
 from flask import Flask, jsonify, request, Blueprint, g, redirect, url_for, session
-from models.subsidiary import Subsidiary
 from models.user_model import User
-from models.userrole_model import Userrole
 from werkzeug.security import generate_password_hash
 from werkzeug.security import check_password_hash
 from functools import wraps
@@ -85,23 +83,8 @@ def add_user():
 
     Parameters:
     - None
-
-    Returns:
-    - If the user role or land is not found, returns a JSON error message with a 400 status code.
     - If the user is added successfully, returns a JSON success message with a 200 status code.
     """
-    userroleID = request.json.get('userroleID')
-    subsidiaryID = request.json.get('subsidiaryID')
-
-    userrole = Userrole.query.filter_by(id=userroleID).first()
-    subsidiary = Subsidiary.query.filter_by(id=subsidiaryID).first()
-
-        # Create a new user
-    if userrole == None:
-        return jsonify(error=f'Userrole {userroleID} not found. Please give existing userrolleID'), 400
-
-    if subsidiary == None:
-        return jsonify(error=f'Subsidiary {subsidiaryID} not found. Please give existing laenderID'), 400
 
     # Password validation
     password = request.json.get('passwort')
@@ -121,8 +104,6 @@ def add_user():
             email = request.json.get('email'),
             passwort = generate_password_hash(request.json.get('passwort'),
                 method='pbkdf2:sha256', salt_length=8),
-            userroleID = userrole.id,
-            subsidiaryID = subsidiary.id
         )
 
         db.session.add(user_data)
@@ -147,8 +128,6 @@ def get_all_user():
                 'id': user.id,
                 'firstName': user.firstName,
                 'lastName': user.lastName,
-                'userroleID': user.userroleID,
-                'subsidiaryID': user.subsidiaryID,
                 'email': user.email
             }
             for user in users
@@ -172,8 +151,6 @@ def get_user(user_id):
             - id (int): The ID of the user.
             - firstName (str): The first name of the user's username.
             - lastName (str): The last name of the user's username.
-            - userroleID (int): The ID of the user's role.
-            - laenderID (int): The ID of the user's location.
     Raises:
         Exception: If an error occurs while retrieving the user.
     """
@@ -184,8 +161,6 @@ def get_user(user_id):
                 'id': user.id,
                 'firstName': user.firstName,
                 'lastName': user.lastName,
-                'userroleID': user.userroleID,
-                'subsidiaryID': user.subsidiaryID,
                 'email': user.email
             }
         return jsonify(user_data), 200
@@ -212,12 +187,6 @@ def search_users():
         search_name = search_params['lastName']
         users = users.filter(User.lastName.ilike(f"%{search_name}%"))
 
-    if 'subsidiaryID' in search_params:
-        users = users.filter_by(subsidiaryID=search_params['subsidiaryID'])
-
-    if 'userroleID' in search_params:
-        users = users.filter_by(userroleID=search_params['userroleID'])
-
     users = users.all()
 
     if not users:
@@ -229,8 +198,6 @@ def search_users():
         user_data['id'] = user.id
         user_data['firstName'] = user.firstName
         user_data['lastName'] = user.lastName
-        user_data['userroleID'] = user.userroleID
-        user_data['subsidiaryID'] = user.subsidiaryID
         user_data['email'] = user.email
         output.append(user_data)
 
@@ -245,9 +212,6 @@ def update_user(user_id):
         
         user.firstName = request.json.get('firstName')
         user.lastName = request.json.get('lastName')
-        user.userroleID = request.json.get('userroleID')
-        user.subsidiaryID = request.json.get('subsidiaryID')
-        # Email ist nicht änderbar -> feste Schwarz Mail
 
         db.session.commit()
 
@@ -288,8 +252,6 @@ def login():
         # Password matches, user is authenticated
         session['user_id'] = user.id
         session['UserLoggedIn'] = True 
-        session['SubsidiaryID'] = user.subsidiaryID  
-        session['UserroleID'] = user.userroleID 
         session['UserLastname'] = user.lastName
         session['UserFirstname'] = user.firstName
         session['UserEmail'] = user.email
@@ -312,8 +274,6 @@ def logout():
 @bp.route("/session_data", methods=['GET'])
 def get_user_data():
     user_id = session.get('user_id')
-    user_logged_in = session.get('UserLoggedIn')
-    subsidiary_id = session.get('SubsidiaryID')
     user_role_id = session.get('UserroleID')
     user_lastname = session.get('UserLastname')
     user_firstname = session.get('UserFirstname')
@@ -323,8 +283,6 @@ def get_user_data():
         return jsonify({
             'user_id': user_id,
             'UserLoggedIn': user_logged_in,
-            'SubsidiaryID': subsidiary_id,
-            'UserroleID': user_role_id,
             'UserLastname': user_lastname,
             'UserFirstname': user_firstname,
             'UserEmail': user_email
