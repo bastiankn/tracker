@@ -28,12 +28,12 @@ GET http://localhost:5000/user/1
 DELETE  http://localhost:5000/user/1
 
 ###
-PUT http://localhost:5000/user/1
+PUT http://localhost:5000/user/2
 Content-Type: application/json
 
 {
   "firstName": "Johnnew2",
-  "lastName": "Doenew2",
+  "lastName": "Doenew2"
 }
 
 ###

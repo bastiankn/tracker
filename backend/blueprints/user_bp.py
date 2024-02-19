@@ -77,8 +77,6 @@ def login():
         # Password matches, user is authenticated
         session['user_id'] = user.id
         session['UserLoggedIn'] = True 
-        session['SubsidiaryID'] = user.subsidiaryID  
-        session['UserroleID'] = user.userroleID 
         session['UserLastname'] = user.lastName
         session['UserFirstname'] = user.firstName
         session['UserEmail'] = user.email
@@ -180,7 +178,7 @@ def get_all_user():
     
 
 @bp.route("/<int:user_id>", methods=['GET'])
-#@login_required
+@login_required
 def get_user(user_id):
     """
     Retrieves a specific user by their ID.
@@ -212,7 +210,7 @@ def get_user(user_id):
     
 
 @bp.route("/<int:user_id>", methods=['PUT'])
-#@login_required
+@login_required
 def update_user(user_id):
     try:
         user_id = request.view_args.get('user_id')
