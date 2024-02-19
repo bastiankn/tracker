@@ -3,7 +3,7 @@ from models.user_model import User
 from werkzeug.security import generate_password_hash
 from werkzeug.security import check_password_hash
 from functools import wraps
-from app import db
+from extensions import db
 
 bp = Blueprint('user', __name__, url_prefix='/user')
 

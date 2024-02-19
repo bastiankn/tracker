@@ -1,6 +1,6 @@
 from flask import Flask
 from extensions import db
-from blueprints import weight_bp, user_bp
+from blueprints import weight_bp, user_bp, password_bp
 
 def create_app():
     app = Flask(__name__)
@@ -16,6 +16,7 @@ def create_app():
 def register_blueprints(app):
     app.register_blueprint(user_bp.bp)
     app.register_blueprint(weight_bp.bp)
+    app.register_blueprint(password_bp.bp)
 
 if __name__ == '__main__':
     app = create_app()
