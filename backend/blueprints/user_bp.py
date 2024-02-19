@@ -16,35 +16,6 @@ def login_required(f):
         return f(*args, **kwargs)
     return decorated_function
 
-# Funktion welche überprüft, ob jemad eingeloggt ist und die Userrole "Superuser" hat.
-def superuser_required(f):
-    @wraps(f)
-    def decorated_function(*args, **kwargs):
-        if not session.get('UserLoggedIn'):
-            # Redirect to the login route or return an authentication error
-            return jsonify(error='Not authenticated'), 401
-        if session.get('UserroleID') != 1:
-            return jsonify(error='Not authorized'), 401
-        return f(*args, **kwargs)
-    return decorated_function
-
-
-@bp.route("/<int:user_id>", methods=['DELETE'])
-@login_required
-def delete_user(user_id):
-    try:
-        user = User.query.get_or_404(user_id)
-            
-        db.session.delete(user)
-        db.session.commit()
-
-        return jsonify(message='User deleted successfully'), 200
-
-    except Exception as e:
-        db.session.rollback()
-        return jsonify(error=f'Error deleting user: {str(e)}'), 500
-
-
 def validate_email(email):
     """
     Validates the emails based on the specified policy.
@@ -74,6 +45,76 @@ def validate_password(password):
     password_regex = r'^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{14,}$'
 
     return re.match(password_regex, password) is not None
+
+@bp.route("/login", methods=['POST'])
+def login():
+    """
+    Authenticate a user based on their email and password.
+
+    This route allows users to log in by providing their email and password
+    in the request JSON. It fetches the user's information from the database
+    using the provided email and checks if the password provided in the request
+    matches the stored password hash for that user.
+
+    Args:
+        None
+
+    Returns:
+        If authentication is successful, returns a success message with a status code 200.
+        If the provided email or password is invalid, returns an error message with a
+        status code 401 (Unauthorized).
+
+    Raises:
+        None
+    """
+    email = request.json.get('email')
+    passwort = request.json.get('passwort')
+
+    # Fetch the user from the database based on the email
+    user = User.query.filter_by(email=email).first()
+
+    if user and check_password_hash(user.passwort, passwort):
+        # Password matches, user is authenticated
+        session['user_id'] = user.id
+        session['UserLoggedIn'] = True 
+        session['SubsidiaryID'] = user.subsidiaryID  
+        session['UserroleID'] = user.userroleID 
+        session['UserLastname'] = user.lastName
+        session['UserFirstname'] = user.firstName
+        session['UserEmail'] = user.email
+        return 'Logged in successfully', 200
+    else:
+        # Invalid email or passwort
+        return 'Invalid email or passwort', 401
+
+@bp.route("/logout", methods=['POST'])
+def logout():
+    if 'user_id' in session:
+        session.clear()
+
+        return 'Logged out successfully', 200
+    else:
+        return 'No user is logged in', 401
+
+
+@bp.route("/session_data", methods=['GET'])
+def get_user_data():
+    user_id = session.get('user_id')
+    user_logged_in = session.get('UserLoggedIn')
+    user_lastname = session.get('UserLastname')
+    user_firstname = session.get('UserFirstname')
+    user_email = session.get('UserEmail')
+
+    if user_id:
+        return jsonify({
+            'user_id': user_id,
+            'UserLoggedIn': user_logged_in,
+            'UserLastname': user_lastname,
+            'UserFirstname': user_firstname,
+            'UserEmail': user_email
+        }), 200
+    else:
+        return 'No user is logged in', 401
 
 @bp.route("/", methods=['POST'])
 @login_required
@@ -139,7 +180,7 @@ def get_all_user():
     
 
 @bp.route("/<int:user_id>", methods=['GET'])
-@login_required
+#@login_required
 def get_user(user_id):
     """
     Retrieves a specific user by their ID.
@@ -169,42 +210,9 @@ def get_user(user_id):
             db.session.rollback()
             return jsonify(error=f'Error deleting user role: {str(e)}'), 500
     
-@bp.route("/search", methods=['GET'])
-@login_required
-def search_users():
-    """
-    Search users based on the given search parameters.
-    Returns:
-        A JSON response containing a list of users matching the search criteria.
-    Raises:
-        404: If no matching entries are found.
-    """
-    search_params = request.args.to_dict()
-
-    users = User.query
-
-    if 'lastName' in search_params:
-        search_name = search_params['lastName']
-        users = users.filter(User.lastName.ilike(f"%{search_name}%"))
-
-    users = users.all()
-
-    if not users:
-        return jsonify({"message": "Keine passenden Eintraege gefunden"}), 404
-
-    output = []
-    for user in users:
-        user_data = {}
-        user_data['id'] = user.id
-        user_data['firstName'] = user.firstName
-        user_data['lastName'] = user.lastName
-        user_data['email'] = user.email
-        output.append(user_data)
-
-    return jsonify(output), 200
 
 @bp.route("/<int:user_id>", methods=['PUT'])
-@login_required
+#@login_required
 def update_user(user_id):
     try:
         user_id = request.view_args.get('user_id')
@@ -221,71 +229,17 @@ def update_user(user_id):
         db.session.rollback()
         return jsonify(error=f'Error updating user: {str(e)}'), 500
 
-@bp.route("/login", methods=['POST'])
-def login():
-    """
-    Authenticate a user based on their email and password.
+@bp.route("/<int:user_id>", methods=['DELETE'])
+@login_required
+def delete_user(user_id):
+    try:
+        user = User.query.get_or_404(user_id)
+            
+        db.session.delete(user)
+        db.session.commit()
 
-    This route allows users to log in by providing their email and password
-    in the request JSON. It fetches the user's information from the database
-    using the provided email and checks if the password provided in the request
-    matches the stored password hash for that user.
+        return jsonify(message='User deleted successfully'), 200
 
-    Args:
-        None
-
-    Returns:
-        If authentication is successful, returns a success message with a status code 200.
-        If the provided email or password is invalid, returns an error message with a
-        status code 401 (Unauthorized).
-
-    Raises:
-        None
-    """
-    email = request.json.get('email')
-    passwort = request.json.get('passwort')
-
-    # Fetch the user from the database based on the email
-    user = User.query.filter_by(email=email).first()
-
-    if user and check_password_hash(user.passwort, passwort):
-        # Password matches, user is authenticated
-        session['user_id'] = user.id
-        session['UserLoggedIn'] = True 
-        session['UserLastname'] = user.lastName
-        session['UserFirstname'] = user.firstName
-        session['UserEmail'] = user.email
-        return 'Logged in successfully', 200
-    else:
-        # Invalid email or passwort
-        return 'Invalid email or passwort', 401
-
-
-@bp.route("/logout", methods=['POST'])
-def logout():
-    if 'user_id' in session:
-        session.clear()
-
-        return 'Logged out successfully', 200
-    else:
-        return 'No user is logged in', 401
-
-
-@bp.route("/session_data", methods=['GET'])
-def get_user_data():
-    user_id = session.get('user_id')
-    user_lastname = session.get('UserLastname')
-    user_firstname = session.get('UserFirstname')
-    user_email = session.get('UserEmail')
-
-    if user_id:
-        return jsonify({
-            'user_id': user_id,
-            'UserLoggedIn': user_logged_in,
-            'UserLastname': user_lastname,
-            'UserFirstname': user_firstname,
-            'UserEmail': user_email
-        }), 200
-    else:
-        return 'No user is logged in', 401
-
+    except Exception as e:
+        db.session.rollback()
+        return jsonify(error=f'Error deleting user: {str(e)}'), 500
