@@ -1,0 +1,73 @@
+###
+POST http://localhost:5000/user
+Content-Type: application/json
+
+{
+  "firstName": "John",
+  "lastName": "Doe",
+  "email": "johndoe2@example.com",
+  "passwort": "passwordDddddddddddd!123"
+}
+
+###
+POST http://localhost:5000/user
+Content-Type: application/json
+
+{
+  "firstName": "Johnathan",
+  "lastName": "Deer",
+  "userroleID": 2,
+  "subsidiaryID": 1,
+  "email": "jonathandeer2@example.com",
+  "passwort": "passwordDdddddddddd!123"
+}
+
+###
+POST http://localhost:5000/user
+Content-Type: application/json
+
+{
+  "firstName": "test",
+  "lastName": "test",
+  "userroleID": 2,
+  "subsidiaryID": 1,
+  "email": "tefjdajskl@fdsl",
+  "passwort": "passwordddddddddD123!"
+}
+###
+GET http://localhost:5000/user
+
+###
+GET http://localhost:5000/user/1
+
+###
+GET http://localhost:5000/user/search?userroleID=1
+
+###
+DELETE  http://localhost:5000/user/1
+
+###
+PUT http://localhost:5000/user/2
+Content-Type: application/json
+
+{
+  "firstName": "Johnnew2",
+  "lastName": "Doenew2",
+  "userroleID": 1,
+  "subsidiaryID": 1
+}
+
+###
+POST http://localhost:5000/user/login
+Content-Type: application/json
+
+{
+    "email": "max@example.com",
+    "passwort": "Password!123456789"
+}
+
+###
+GET http://localhost:5000/user/session_data
+
+###
+POST http://localhost:5000/user/logout

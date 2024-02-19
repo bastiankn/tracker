@@ -274,7 +274,6 @@ def logout():
 @bp.route("/session_data", methods=['GET'])
 def get_user_data():
     user_id = session.get('user_id')
-    user_role_id = session.get('UserroleID')
     user_lastname = session.get('UserLastname')
     user_firstname = session.get('UserFirstname')
     user_email = session.get('UserEmail')

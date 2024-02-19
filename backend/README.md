@@ -40,4 +40,4 @@ https://stackoverflow.com/questions/75365194/sqlalchemy-2-0-version-of-user-quer
 --version and pip --version
 The following in Terminal
 - virutalenv .venv
-- .venv\Scripts\activate (You might have to enable running scripts in powershell)
+- .venv\Scripts\activate (You might have to enable running scripts in powershell: Open WindowsPowershell as admin, Get-ExecutionPolicy, if restricted: Set-ExecutionPolicy RemoteSigned)
