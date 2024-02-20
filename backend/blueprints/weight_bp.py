@@ -11,7 +11,7 @@ def get_all_weights():
         weight_data = [
             {
                 'id': weight.id,
-                'date': weight.date.strftime('%Y-%m-%d'),  # Convert datetime to string
+                'date': weight.date.strftime('%Y-%m-%d'),
                 'weight': weight.weight,
                 'fat': weight.fat,
                 'total_body_water': weight.total_body_water,

@@ -14,3 +14,5 @@ class Weight(db.Model):
     bone_density = db.Column(db.Float, nullable=True)
 
     user = db.relationship('User', backref='weights')
+
+    ##müsste user_id noch ins blueprint packen

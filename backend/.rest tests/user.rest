@@ -1,14 +1,16 @@
+@baseURL = http://localhost:5000/user
+
 ###
-POST http://localhost:5000/user/login
+POST {{baseURL}}/login
 Content-Type: application/json
 
 {
     "email": "johndoe@example.com",
-    "passwort": "passwordDddddddddddd!123"
+    "passwort": "Password!123456789"
 }
 
 ###
-POST http://localhost:5000/user
+POST {{baseURL}}
 Content-Type: application/json
 
 {
@@ -19,16 +21,16 @@ Content-Type: application/json
 }
 
 ###
-GET http://localhost:5000/user
+GET {{baseURL}}
 
 ###
-GET http://localhost:5000/user/1
+GET {{baseURL}}/1
 
 ###
-DELETE  http://localhost:5000/user/1
+DELETE  {{baseURL}}/1
 
 ###
-PUT http://localhost:5000/user/2
+PUT {{baseURL}}/2
 Content-Type: application/json
 
 {
@@ -37,7 +39,7 @@ Content-Type: application/json
 }
 
 ###
-GET http://localhost:5000/user/session_data
+GET {{baseURL}}/session_data
 
 ###
-POST http://localhost:5000/user/logout
+POST {{baseURL}}/logout

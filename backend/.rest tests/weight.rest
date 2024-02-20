@@ -1,0 +1,33 @@
+@baseURL = http://localhost:5000/weight
+
+###
+GET {{baseURL}}/
+
+###
+POST {{baseURL}}/
+Content-Type: application/json
+
+{
+    "date": "<date>",
+    "weight": "96",
+    "fat": "",
+    "total_body_water": "",
+    "muscle_mass": "",
+    "bone_density": ""
+}
+
+###
+GET {{baseURL}}/<1>
+
+###
+
+PUT {{baseURL}}/<id>
+Content-Type: application/json
+
+{
+    "date": "<date>",
+
+}
+
+###
+DELETE {{baseURL}}/<id>
